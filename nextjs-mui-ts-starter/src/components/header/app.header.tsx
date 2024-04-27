@@ -61,7 +61,7 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
   },
 }));
 
-export default function AppHeader() {
+const AppHeader = () => {
   const [count, setCount] = React.useState<number>(0);
 
   const numberRef = React.useRef(count);
@@ -245,4 +245,6 @@ export default function AppHeader() {
       {renderMenu}
     </Box>
   );
-}
+};
+
+export default AppHeader;
