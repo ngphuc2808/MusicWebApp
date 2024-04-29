@@ -20,6 +20,7 @@ import Container from "@mui/material/Container";
 import { Avatar } from "@mui/material";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { useSession, signIn, signOut } from "next-auth/react";
 
 const Search = styled("div")(({ theme }) => ({
   position: "relative",
@@ -62,9 +63,7 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
 }));
 
 const AppHeader = () => {
-  const [count, setCount] = React.useState<number>(0);
-
-  const numberRef = React.useRef(count);
+  const { data: session } = useSession();
 
   const router = useRouter();
 
@@ -105,7 +104,7 @@ const AppHeader = () => {
     >
       <MenuItem>
         <Link
-          href={"/profile"}
+          href={`/profile/${session?.user._id}`}
           style={{
             color: "unset",
             textDecoration: "none",
@@ -114,7 +113,14 @@ const AppHeader = () => {
           Profile
         </Link>
       </MenuItem>
-      <MenuItem onClick={handleMenuClose}>My account</MenuItem>
+      <MenuItem
+        onClick={() => {
+          handleMenuClose();
+          signOut();
+        }}
+      >
+        Logout
+      </MenuItem>
     </Menu>
   );
 
@@ -214,17 +220,23 @@ const AppHeader = () => {
                 },
               }}
             >
-              <Link href={"/playlist"}>Playlists</Link>
-              <Link href={"/like"}>Likes</Link>
-              <span>Upload</span>
-              <Avatar
-                onClick={handleProfileMenuOpen}
-                sx={{
-                  cursor: "pointer",
-                }}
-              >
-                HP
-              </Avatar>
+              {session ? (
+                <>
+                  <Link href={"/playlist"}>Playlists</Link>
+                  <Link href={"/like"}>Likes</Link>
+                  <Link href={"/track/upload"}>Upload</Link>
+                  <Avatar
+                    onClick={handleProfileMenuOpen}
+                    sx={{
+                      cursor: "pointer",
+                    }}
+                  >
+                    HP
+                  </Avatar>
+                </>
+              ) : (
+                <Link href={"/auth/signin"}>Login</Link>
+              )}
             </Box>
             <Box sx={{ display: { xs: "flex", md: "none" } }}>
               <IconButton

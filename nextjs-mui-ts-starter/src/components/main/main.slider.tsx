@@ -11,7 +11,7 @@ import Divider from "@mui/material/Divider";
 import Link from "next/link";
 
 interface IProps {
-  data: ITRackTop[];
+  data: ITrackTop[];
   title: string;
   custom?: boolean;
 }
@@ -97,7 +97,7 @@ const MainSlider = (props: IProps) => {
               src={`${process.env.NEXT_PUBLIC_BACKEND_URL}/images/${it.imgUrl}`}
             />
             <Link
-              href={`/track/${it._id}?audio=${it.trackUrl}`}
+              href={`/track/${it._id}?audio=${it.trackUrl}&id=${it._id}`}
               className="track"
               key={it._id}
             >
