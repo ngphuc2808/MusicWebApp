@@ -6,7 +6,12 @@ import {
   Outlet,
   RouterProvider,
 } from "react-router-dom";
-import { UserOutlined, HomeOutlined, AudioOutlined } from "@ant-design/icons";
+import {
+  UserOutlined,
+  HomeOutlined,
+  AudioOutlined,
+  CommentOutlined,
+} from "@ant-design/icons";
 import type { MenuProps } from "antd";
 import { Menu } from "antd";
 
@@ -14,6 +19,7 @@ import UsersPage from "./screens/users.page.tsx";
 import App from "./App.tsx";
 import "./App.scss";
 import TrackPage from "./screens/tracks.page.tsx";
+import CommentPage from "./screens/comments.page.tsx";
 
 const items: MenuProps["items"] = [
   {
@@ -30,6 +36,11 @@ const items: MenuProps["items"] = [
     label: <Link to={"/tracks"}>Mange Tracks</Link>,
     key: "tracks",
     icon: <AudioOutlined />,
+  },
+  {
+    label: <Link to={"/comments"}>Mange Comments</Link>,
+    key: "comments",
+    icon: <CommentOutlined />,
   },
 ];
 
@@ -97,6 +108,10 @@ const router = createBrowserRouter([
       {
         path: "tracks",
         element: <TrackPage />,
+      },
+      {
+        path: "comments",
+        element: <CommentPage />,
       },
     ],
   },

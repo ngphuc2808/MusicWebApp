@@ -10,6 +10,7 @@ export default function UserLayout({
     <>
       <AppHeader />
       {children}
+      <div style={{ marginBottom: "100px" }}></div>
       <AppFooter />
     </>
   );

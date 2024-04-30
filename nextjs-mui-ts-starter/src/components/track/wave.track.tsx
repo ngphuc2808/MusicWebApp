@@ -9,13 +9,19 @@ import PauseIcon from "@mui/icons-material/Pause";
 import "./style.scss";
 import { Tooltip } from "@mui/material";
 import { useTrackContext } from "@/app/lib/track.wrapper";
-
+import { fetchDefaultImages, sendRequest } from "@/utils/api";
+import CommentTrack from "./comment.track";
+import LikeTrack from "./like.track";
+import { useRouter } from "next/navigation";
 interface IProps {
   track: ITrackTop | null;
+  comments: ITrackComment[] | [];
 }
 
 const WaveTrack = (props: IProps) => {
-  const { track } = props;
+  const firstViewRef = useRef(true);
+  const router = useRouter();
+  const { track, comments } = props;
   const searchParams = useSearchParams();
   const fileName = searchParams.get("audio");
   const containerRef = useRef<HTMLDivElement>(null);
@@ -123,36 +129,27 @@ const WaveTrack = (props: IProps) => {
     }
   }, [wavesurfer]);
 
+  const handleIncreaseView = async () => {
+    if (firstViewRef.current) {
+      await sendRequest<IBackendRes<IModelPaginate<ITrackTop>>>({
+        url: `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/tracks/increase-view`,
+        method: "POST",
+        body: {
+          trackId: track?._id,
+        },
+      });
+
+      router.refresh();
+      firstViewRef.current = false;
+    }
+  };
+
   const formatTime = (seconds: number) => {
     const minutes = Math.floor(seconds / 60);
     const secondsRemainder = Math.round(seconds) % 60;
     const paddedSeconds = `0${secondsRemainder}`.slice(-2);
     return `${minutes}:${paddedSeconds}`;
   };
-
-  const arrComments = [
-    {
-      id: 1,
-      avatar: "http://localhost:8000/images/chill1.png",
-      moment: 10,
-      user: "username 1",
-      content: "just a comment1",
-    },
-    {
-      id: 2,
-      avatar: "http://localhost:8000/images/chill1.png",
-      moment: 30,
-      user: "username 2",
-      content: "just a comment3",
-    },
-    {
-      id: 3,
-      avatar: "http://localhost:8000/images/chill1.png",
-      moment: 50,
-      user: "username 3",
-      content: "just a comment3",
-    },
-  ];
 
   const calLeft = (moment: number) => {
     const hardCodeDuration = 199;
@@ -198,6 +195,7 @@ const WaveTrack = (props: IProps) => {
               <div
                 onClick={() => {
                   onPlayClick();
+                  handleIncreaseView();
                   if (track && wavesurfer) {
                     setCurrentTrack({ ...currentTrack, isPlaying: false });
                   }
@@ -262,15 +260,15 @@ const WaveTrack = (props: IProps) => {
               }}
             ></div>
             <div className="comments" style={{ position: "relative" }}>
-              {arrComments.map((item) => {
+              {comments.map((item) => {
                 return (
-                  <Tooltip title={item.content} arrow key={item.id}>
+                  <Tooltip title={item.content} arrow key={item._id}>
                     <img
                       onPointerMove={(e) => {
                         const hover = hoverRef.current!;
                         hover.style.width = calLeft(item.moment);
                       }}
-                      key={item.id}
+                      key={item._id}
                       style={{
                         height: 20,
                         width: 20,
@@ -279,7 +277,7 @@ const WaveTrack = (props: IProps) => {
                         zIndex: 20,
                         left: calLeft(item.moment),
                       }}
-                      src={`${process.env.NEXT_PUBLIC_BACKEND_URL}/images/${track?.imgUrl}`}
+                      src={fetchDefaultImages(item.user.type)}
                     />
                   </Tooltip>
                 );
@@ -296,15 +294,35 @@ const WaveTrack = (props: IProps) => {
             alignItems: "center",
           }}
         >
-          <img
-            style={{
-              background: "#ccc",
-              width: 250,
-              height: 250,
-            }}
-            src={`${process.env.NEXT_PUBLIC_BACKEND_URL}/images/${track?.imgUrl}`}
-          />
+          {track?.imgUrl ? (
+            <img
+              style={{
+                background: "#ccc",
+                width: 250,
+                height: 250,
+              }}
+              src={`${process.env.NEXT_PUBLIC_BACKEND_URL}/images/${track?.imgUrl}`}
+            />
+          ) : (
+            <div
+              style={{
+                background: "#ccc",
+                width: 250,
+                height: 250,
+              }}
+            ></div>
+          )}
         </div>
+      </div>
+      <div>
+        <LikeTrack track={track} />
+      </div>
+      <div>
+        <CommentTrack
+          wavesurfer={wavesurfer}
+          comments={comments}
+          track={track}
+        />
       </div>
     </div>
   );
