@@ -13,6 +13,8 @@ import { fetchDefaultImages, sendRequest } from "@/utils/api";
 import CommentTrack from "./comment.track";
 import LikeTrack from "./like.track";
 import { useRouter } from "next/navigation";
+import Image from "next/image";
+
 interface IProps {
   track: ITrackTop | null;
   comments: ITrackComment[] | [];
@@ -263,21 +265,22 @@ const WaveTrack = (props: IProps) => {
               {comments.map((item) => {
                 return (
                   <Tooltip title={item.content} arrow key={item._id}>
-                    <img
+                    <Image
                       onPointerMove={(e) => {
                         const hover = hoverRef.current!;
                         hover.style.width = calLeft(item.moment);
                       }}
                       key={item._id}
+                      height={20}
+                      width={20}
                       style={{
-                        height: 20,
-                        width: 20,
                         position: "absolute",
                         top: 71,
                         zIndex: 20,
                         left: calLeft(item.moment),
                       }}
                       src={fetchDefaultImages(item.user.type)}
+                      alt="user-avatar"
                     />
                   </Tooltip>
                 );
@@ -295,13 +298,11 @@ const WaveTrack = (props: IProps) => {
           }}
         >
           {track?.imgUrl ? (
-            <img
-              style={{
-                background: "#ccc",
-                width: 250,
-                height: 250,
-              }}
+            <Image
+              width={250}
+              height={250}
               src={`${process.env.NEXT_PUBLIC_BACKEND_URL}/images/${track?.imgUrl}`}
+              alt="track-img"
             />
           ) : (
             <div

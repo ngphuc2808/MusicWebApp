@@ -37,8 +37,6 @@ const LikeTrack = (props: IProps) => {
     fetchData();
   }, [session]);
 
-  console.log(track);
-
   const handleLikeTrack = async () => {
     await sendRequest<IBackendRes<IModelPaginate<ITrackLike>>>({
       url: `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/likes`,

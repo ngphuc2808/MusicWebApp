@@ -9,6 +9,8 @@ import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
 import ChevronRightIcon from "@mui/icons-material/ChevronRight";
 import Divider from "@mui/material/Divider";
 import Link from "next/link";
+import { convertStrToSlugify } from "@/utils/api";
+import Image from "next/image";
 
 interface IProps {
   data: ITrackTop[];
@@ -67,6 +69,32 @@ const MainSlider = (props: IProps) => {
     slidesToScroll: 1,
     nextArrow: <NextArrow />,
     prevArrow: <PrevArrow />,
+    responsive: [
+      {
+        breakpoint: 1024,
+        settings: {
+          slidesToShow: 3,
+          slidesToScroll: 3,
+          infinite: true,
+          dots: true,
+        },
+      },
+      {
+        breakpoint: 600,
+        settings: {
+          slidesToShow: 2,
+          slidesToScroll: 2,
+          initialSlide: 2,
+        },
+      },
+      {
+        breakpoint: 480,
+        settings: {
+          slidesToShow: 1,
+          slidesToScroll: 1,
+        },
+      },
+    ],
   };
 
   return (
@@ -93,11 +121,26 @@ const MainSlider = (props: IProps) => {
       <Slider {...(settings as any)}>
         {data.map((it) => (
           <div className="track" key={it._id}>
-            <img
-              src={`${process.env.NEXT_PUBLIC_BACKEND_URL}/images/${it.imgUrl}`}
-            />
+            <div
+              style={{
+                position: "relative",
+                width: 150,
+                height: 150,
+              }}
+            >
+              <Image
+                src={`${process.env.NEXT_PUBLIC_BACKEND_URL}/images/${it.imgUrl}`}
+                fill
+                style={{
+                  objectFit: "contain",
+                }}
+                alt="track-img"
+              />
+            </div>
             <Link
-              href={`/track/${it._id}?audio=${it.trackUrl}&id=${it._id}`}
+              href={`/track/${convertStrToSlugify(it.title)}-${
+                it._id
+              }.html?audio=${it.trackUrl}`}
               className="track"
               key={it._id}
             >

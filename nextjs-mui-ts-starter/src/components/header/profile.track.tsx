@@ -13,6 +13,7 @@ import SkipNextIcon from "@mui/icons-material/SkipNext";
 import { useTrackContext } from "@/app/lib/track.wrapper";
 import { PauseCircleOutline } from "@mui/icons-material";
 import Link from "next/link";
+import { convertStrToSlugify } from "@/utils/api";
 
 interface IProps {
   data: ITrackTop;
@@ -28,7 +29,9 @@ const ProfileTracks = (props: IProps) => {
         <CardContent sx={{ flex: "1 0 auto" }}>
           <Typography component="div" variant="h5">
             <Link
-              href={`/track/${data._id}?audio=${data.trackUrl}&id=${data._id}`}
+              href={`/track/${convertStrToSlugify(data.title)}-${
+                data._id
+              }.html?audio=${data.trackUrl}`}
             >
               {data.title}
             </Link>
