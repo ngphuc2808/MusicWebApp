@@ -17,12 +17,12 @@ import MailIcon from "@mui/icons-material/Mail";
 import NotificationsIcon from "@mui/icons-material/Notifications";
 import MoreIcon from "@mui/icons-material/MoreVert";
 import Container from "@mui/material/Container";
-import { Avatar } from "@mui/material";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useSession, signIn, signOut } from "next-auth/react";
+import { useSession, signOut } from "next-auth/react";
 import { fetchDefaultImages } from "@/utils/api";
 import Image from "next/image";
+import ActiveLink from "./active.link";
 
 const Search = styled("div")(({ theme }) => ({
   position: "relative",
@@ -208,6 +208,12 @@ const AppHeader = () => {
               <StyledInputBase
                 placeholder="Search…"
                 inputProps={{ "aria-label": "search" }}
+                onKeyDown={(e: any) => {
+                  if (e.key === "Enter") {
+                    if (e?.target?.value)
+                      router.push(`/search?q=${e?.target?.value}`);
+                  }
+                }}
               />
             </Search>
             <Box sx={{ flexGrow: 1 }} />
@@ -219,14 +225,20 @@ const AppHeader = () => {
                 "> a": {
                   color: "unset",
                   textDecoration: "none",
+                  padding: "5px",
+                  "&.active": {
+                    bgcolor: "#3b4a59",
+                    color: "#cefaff",
+                    borderRadius: "5px",
+                  },
                 },
               }}
             >
               {session ? (
                 <>
-                  <Link href={"/playlist"}>Playlists</Link>
-                  <Link href={"/like"}>Likes</Link>
-                  <Link href={"/track/upload"}>Upload</Link>
+                  <ActiveLink href={"/playlist"}>Playlists</ActiveLink>
+                  <ActiveLink href={"/like"}>Likes</ActiveLink>
+                  <ActiveLink href={"/track/upload"}>Upload</ActiveLink>
                   <Image
                     onClick={handleProfileMenuOpen}
                     src={fetchDefaultImages(session.user.type)}

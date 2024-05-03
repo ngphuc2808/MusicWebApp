@@ -1,12 +1,8 @@
 import MainSlider from "@/components/main/main.slider";
 import { Container } from "@mui/material";
 import { sendRequest } from "@/utils/api";
-import { getServerSession } from "next-auth";
-import { authOptions } from "../api/auth/[...nextauth]/route";
 
 const HomePage = async () => {
-  const session = await getServerSession(authOptions);
-
   const chills = await sendRequest<IBackendRes<ITrackTop[]>>({
     url: `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/tracks/top`,
     method: "POST",

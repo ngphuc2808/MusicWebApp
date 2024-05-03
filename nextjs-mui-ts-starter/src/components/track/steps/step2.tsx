@@ -16,6 +16,7 @@ import axios from "axios";
 import { useSession } from "next-auth/react";
 import { sendRequest } from "@/utils/api";
 import { useToast } from "@/utils/toast";
+import { useRouter } from "next/navigation";
 import Image from "next/image";
 
 function LinearProgressWithLabel(
@@ -122,6 +123,7 @@ interface INewTrack {
 const Step2 = (props: IProps) => {
   const { data: session } = useSession();
   const toast = useToast();
+  const router = useRouter();
 
   const { trackUpload, setValue } = props;
   const [info, setInfo] = React.useState<INewTrack>({
@@ -174,6 +176,17 @@ const Step2 = (props: IProps) => {
     if (res.data) {
       setValue(0);
       toast.success("create success");
+
+      await sendRequest<IBackendRes<any>>({
+        url: "/api/revalidate",
+        method: "POST",
+        queryParams: {
+          tag: "track-by-profile",
+          secret: "justASecret",
+        },
+      });
+
+      router.refresh();
     } else {
       toast.error(res.message);
     }

@@ -62,6 +62,7 @@ const CommentTrack = (props: IProps) => {
       wavesurfer.play();
     }
   };
+
   return (
     <div>
       <div style={{ marginTop: "50px", marginBottom: "25px" }}>
@@ -110,7 +111,7 @@ const CommentTrack = (props: IProps) => {
                   }}
                 >
                   <Image
-                    src={fetchDefaultImages(track?.uploader?.type!)}
+                    src={fetchDefaultImages(comment?.user?.type!)}
                     width={40}
                     height={40}
                     alt="user-avatar"

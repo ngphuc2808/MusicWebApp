@@ -1,8 +1,7 @@
 import WaveTrack from "@/components/track/wave.track";
-import { useSearchParams } from "next/navigation";
+import { notFound, useSearchParams } from "next/navigation";
 import Container from "@mui/material/Container";
 import { sendRequest } from "@/utils/api";
-import slugify from "slugify";
 import type { Metadata, ResolvingMetadata } from "next";
 
 type Props = {
@@ -30,15 +29,23 @@ export async function generateMetadata(
     title: res.data?.title,
     description: res.data?.description,
     openGraph: {
-      title: "Hỏi Dân IT",
-      description: "Beyond Your Coding Skills",
+      title: "SoundClound Clone",
+      description: "Clone soundclound application with NextJs",
       type: "website",
-      images: [
-        `https://raw.githubusercontent.com/hoidanit/images-
-        hosting/master/eric.png`,
-      ],
+      images: [``],
     },
   };
+}
+
+export async function generateStaticParams() {
+  return [
+    {
+      slug: "nu-hon-bisou-662c0ec506f1691c6b0ebc9b.html",
+    },
+    {
+      slug: "tinh-co-yeu-em-662c0ec506f1691c6b0ebca1.html",
+    },
+  ];
 }
 
 const DetailTrackPage = async (props: any) => {
@@ -52,9 +59,15 @@ const DetailTrackPage = async (props: any) => {
     url: `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/tracks/${id}`,
     method: "GET",
     nextOption: {
-      cache: "no-store",
+      next: {
+        tags: ["track-by-id"],
+      },
     },
   });
+
+  if (!res.data) {
+    notFound();
+  }
 
   const res1 = await sendRequest<IBackendRes<IModelPaginate<ITrackComment>>>({
     url: `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/tracks/comments`,
@@ -66,6 +79,8 @@ const DetailTrackPage = async (props: any) => {
       sort: "-createdAt",
     },
   });
+
+  await new Promise((resolve) => setTimeout(resolve, 500));
 
   return (
     <Container>

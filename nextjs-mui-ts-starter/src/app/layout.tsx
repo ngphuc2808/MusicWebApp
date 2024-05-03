@@ -60,7 +60,6 @@ export default function RootLayout({
       longitude: "106.65856519879867",
     },
   };
-
   return (
     <html lang="en" suppressHydrationWarning>
       <body>

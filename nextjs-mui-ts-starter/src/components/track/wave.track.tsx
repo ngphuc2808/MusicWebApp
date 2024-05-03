@@ -90,6 +90,7 @@ const WaveTrack = (props: IProps) => {
       url: `/api?audio=${fileName}`,
     };
   }, []);
+
   const wavesurfer = useWavesurfer(containerRef, optionsMemo);
   const [isPlaying, setIsPlaying] = useState<boolean>(false);
   // Initialize wavesurfer when the container mounts
@@ -138,6 +139,15 @@ const WaveTrack = (props: IProps) => {
         method: "POST",
         body: {
           trackId: track?._id,
+        },
+      });
+
+      await sendRequest<IBackendRes<any>>({
+        url: "/api/revalidate",
+        method: "POST",
+        queryParams: {
+          tag: "track-by-id",
+          secret: "justASecret",
         },
       });
 

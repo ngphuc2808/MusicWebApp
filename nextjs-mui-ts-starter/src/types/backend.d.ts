@@ -2,6 +2,22 @@ export {};
 // https://bobbyhadz.com/blog/typescript-make-types-global#declare-global-types-in-typescript
 
 declare global {
+  interface IPlayList {
+    _id: string;
+    title: string;
+    isPublic: boolean;
+    user: {
+      _id: string;
+      email: string;
+      name: string;
+      role: string;
+      type: string;
+    };
+    tracks: IShareTrack[];
+    isDeleted: boolean;
+    createdAt: string;
+    updatedAt: string;
+  }
   interface ITrackTop {
     _id: string;
     title: string;

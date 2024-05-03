@@ -11,6 +11,7 @@ import Divider from "@mui/material/Divider";
 import Link from "next/link";
 import { convertStrToSlugify } from "@/utils/api";
 import Image from "next/image";
+import { useHasMounted } from "@/utils/customHook";
 
 interface IProps {
   data: ITrackTop[];
@@ -63,7 +64,7 @@ const MainSlider = (props: IProps) => {
   };
 
   const settings: Settings = {
-    infinite: true,
+    infinite: data.length > 3,
     speed: 500,
     slidesToShow: 5,
     slidesToScroll: 1,

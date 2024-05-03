@@ -180,13 +180,13 @@ const AuthSignIn = (props: any) => {
                 gap: "25px",
                 mt: 3,
               }}
-              onClick={() => signIn("github")}
             >
               <Avatar
                 sx={{
                   cursor: "pointer",
                   bgcolor: "orange",
                 }}
+                onClick={() => signIn("github")}
               >
                 <GitHubIcon titleAccess="Login with Github" />
               </Avatar>
@@ -196,6 +196,7 @@ const AuthSignIn = (props: any) => {
                   cursor: "pointer",
                   bgcolor: "orange",
                 }}
+                onClick={() => signIn("google")}
               >
                 <GoogleIcon titleAccess="Login with Google" />
               </Avatar>
