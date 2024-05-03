@@ -92,7 +92,7 @@ const TracksTable = () => {
     {
       title: "STT",
       dataIndex: "_id",
-      render: (_, record, index) => {
+      render: (_, __, index) => {
         return <>{(meta.current - 1) * meta.pageSize + index + 1}</>;
       },
     },
