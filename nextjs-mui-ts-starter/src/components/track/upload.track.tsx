@@ -13,6 +13,10 @@ interface TabPanelProps {
   value: number;
 }
 
+interface IProps {
+  refreshCache: () => void;
+}
+
 function CustomTabPanel(props: TabPanelProps) {
   const { children, value, index, ...other } = props;
 
@@ -29,7 +33,8 @@ function CustomTabPanel(props: TabPanelProps) {
   );
 }
 
-const UploadTabs = () => {
+const UploadTabs = (props: IProps) => {
+  const { refreshCache } = props;
   const [value, setValue] = React.useState(0);
   const [trackUpload, setTrackUpload] = React.useState({
     fileName: "",
@@ -61,7 +66,11 @@ const UploadTabs = () => {
         />
       </CustomTabPanel>
       <CustomTabPanel value={value} index={1}>
-        <Step2 trackUpload={trackUpload} setValue={setValue} />
+        <Step2
+          refreshCache={refreshCache}
+          trackUpload={trackUpload}
+          setValue={setValue}
+        />
       </CustomTabPanel>
     </Box>
   );

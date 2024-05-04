@@ -110,6 +110,7 @@ interface IProps {
     uploadedTrackName: string;
   };
   setValue: (v: number) => void;
+  refreshCache?: () => void;
 }
 
 interface INewTrack {
@@ -125,7 +126,7 @@ const Step2 = (props: IProps) => {
   const toast = useToast();
   const router = useRouter();
 
-  const { trackUpload, setValue } = props;
+  const { trackUpload, setValue, refreshCache } = props;
   const [info, setInfo] = React.useState<INewTrack>({
     title: "",
     description: "",
@@ -177,14 +178,7 @@ const Step2 = (props: IProps) => {
       setValue(0);
       toast.success("create success");
 
-      await sendRequest<IBackendRes<any>>({
-        url: "/api/revalidate",
-        method: "POST",
-        queryParams: {
-          tag: "track-by-profile",
-          secret: "justASecret",
-        },
-      });
+      if (refreshCache) await refreshCache();
 
       router.refresh();
     } else {

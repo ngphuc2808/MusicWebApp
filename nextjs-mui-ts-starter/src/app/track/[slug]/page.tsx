@@ -80,6 +80,18 @@ const DetailTrackPage = async (props: any) => {
     },
   });
 
+  const refreshCache = async () => {
+    "use server";
+    await sendRequest<IBackendRes<any>>({
+      url: `${process.env.NEXT_PUBLIC_FRONTEND_URL}/api/revalidate`,
+      method: "POST",
+      queryParams: {
+        tag: "track-by-id",
+        secret: process.env.MY_SECRET_TOKEN,
+      },
+    });
+  };
+
   await new Promise((resolve) => setTimeout(resolve, 500));
 
   return (
@@ -88,6 +100,7 @@ const DetailTrackPage = async (props: any) => {
         <WaveTrack
           track={res?.data ?? null}
           comments={res1.data?.result ?? []}
+          refreshCache={refreshCache}
         />
       </div>
     </Container>

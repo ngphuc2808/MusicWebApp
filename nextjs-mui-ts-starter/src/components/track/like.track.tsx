@@ -8,9 +8,10 @@ import { useRouter } from "next/navigation";
 
 interface IProps {
   track: ITrackTop | null;
+  refreshCache: () => void;
 }
 const LikeTrack = (props: IProps) => {
-  const { track } = props;
+  const { track, refreshCache } = props;
   const { data: session } = useSession();
   const router = useRouter();
 
@@ -52,14 +53,7 @@ const LikeTrack = (props: IProps) => {
 
     fetchData();
 
-    await sendRequest<IBackendRes<any>>({
-      url: "/api/revalidate",
-      method: "POST",
-      queryParams: {
-        tag: "track-by-id",
-        secret: "justASecret",
-      },
-    });
+    await refreshCache();
 
     router.refresh();
   };

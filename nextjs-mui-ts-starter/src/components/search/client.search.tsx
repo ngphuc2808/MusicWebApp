@@ -1,7 +1,6 @@
 "use client";
-
-import { convertStrToSlugify, sendRequest } from "@/utils/api";
 import { useSearchParams } from "next/navigation";
+import { convertStrToSlugify, sendRequest } from "@/utils/api";
 import { useState, useEffect } from "react";
 import Box from "@mui/material/Box";
 import Divider from "@mui/material/Divider";

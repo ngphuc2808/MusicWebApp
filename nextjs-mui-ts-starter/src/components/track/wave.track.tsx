@@ -18,12 +18,13 @@ import Image from "next/image";
 interface IProps {
   track: ITrackTop | null;
   comments: ITrackComment[] | [];
+  refreshCache: () => void;
 }
 
 const WaveTrack = (props: IProps) => {
   const firstViewRef = useRef(true);
   const router = useRouter();
-  const { track, comments } = props;
+  const { track, comments, refreshCache } = props;
   const searchParams = useSearchParams();
   const fileName = searchParams.get("audio");
   const containerRef = useRef<HTMLDivElement>(null);
@@ -142,14 +143,7 @@ const WaveTrack = (props: IProps) => {
         },
       });
 
-      await sendRequest<IBackendRes<any>>({
-        url: "/api/revalidate",
-        method: "POST",
-        queryParams: {
-          tag: "track-by-id",
-          secret: "justASecret",
-        },
-      });
+      await refreshCache();
 
       router.refresh();
       firstViewRef.current = false;
@@ -326,7 +320,7 @@ const WaveTrack = (props: IProps) => {
         </div>
       </div>
       <div>
-        <LikeTrack track={track} />
+        <LikeTrack refreshCache={refreshCache} track={track} />
       </div>
       <div>
         <CommentTrack

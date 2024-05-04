@@ -5,9 +5,9 @@ import Box from "@mui/material/Box";
 
 import { convertStrToSlugify, sendRequest } from "@/utils/api";
 import { getServerSession } from "next-auth";
-import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 import Image from "next/image";
 import Link from "next/link";
+import { authOptions } from "@/auth";
 
 export const metadata: Metadata = {
   title: "Tracks bạn đã liked",

@@ -22,10 +22,11 @@ import { useSession } from "next-auth/react";
 interface IProps {
   playlists: IPlayList[];
   tracks: ITrackTop[];
+  refreshCache: () => void;
 }
 
 const AddPlaylistTrack = (props: IProps) => {
-  const { playlists, tracks } = props;
+  const { playlists, tracks, refreshCache } = props;
 
   const [open, setOpen] = useState(false);
   const toast = useToast();
@@ -89,14 +90,7 @@ const AddPlaylistTrack = (props: IProps) => {
 
       if (res.data) {
         toast.success("Thêm track vào playlist thành công!");
-        await sendRequest<IBackendRes<any>>({
-          url: `/api/revalidate`,
-          method: "POST",
-          queryParams: {
-            tag: "playlist-by-user",
-            secret: "justArandomString",
-          },
-        });
+        await refreshCache();
         handleClose("", "");
         router.refresh();
       } else {
