@@ -1,5 +1,6 @@
-import MainSlider from "@/components/main/main.slider";
-import { Container } from "@mui/material";
+import Container from "@mui/material/Container";
+
+import MainSlider from "@/components/slider/slider";
 import { sendRequest } from "@/utils/api";
 
 const HomePage = async () => {

@@ -1,7 +1,7 @@
 "use client";
-import Button from "@mui/material/Button";
+import { SyntheticEvent, useState } from "react";
+import Button from "@mui/material/Button/Button";
 import AddIcon from "@mui/icons-material/Add";
-import { useState } from "react";
 import Dialog from "@mui/material/Dialog";
 import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
@@ -14,31 +14,29 @@ import Select from "@mui/material/Select";
 import { Theme, useTheme } from "@mui/material/styles";
 import OutlinedInput from "@mui/material/OutlinedInput";
 import Chip from "@mui/material/Chip";
+
 import { useToast } from "@/utils/toast";
-import { sendRequest } from "@/utils/api";
 import { useRouter } from "next/navigation";
-import { useSession } from "next-auth/react";
+import { handleAddPlaylistAction } from "@/utils/actions/actions";
 
 interface IProps {
   playlists: IPlayList[];
   tracks: ITrackTop[];
-  refreshCache: () => void;
 }
 
 const AddPlaylistTrack = (props: IProps) => {
-  const { playlists, tracks, refreshCache } = props;
+  const { playlists, tracks } = props;
 
   const [open, setOpen] = useState(false);
   const toast = useToast();
   const router = useRouter();
-  const { data: session } = useSession();
 
   const [playlistId, setPlaylistId] = useState("");
   const [tracksId, setTracksId] = useState<string[]>([]);
 
   const theme = useTheme();
 
-  const handleClose = (event: any, reason: any) => {
+  const handleClose = (event: SyntheticEvent | string, reason: string) => {
     if (reason && reason == "backdropClick") return;
     setOpen(false);
     setPlaylistId("");
@@ -60,37 +58,22 @@ const AddPlaylistTrack = (props: IProps) => {
 
   const handleSubmit = async () => {
     if (!playlistId) {
-      toast.error("Vui lòng chọn playlist!");
+      toast.error("Please select playlist!");
       return;
     }
     if (!tracksId.length) {
-      toast.error("Vui lòng chọn tracks!");
+      toast.error("Please select tracks!");
       return;
     }
 
     const chosenPlaylist = playlists.find((i) => i._id === playlistId);
     let tracks = tracksId?.map((item) => item?.split("###")?.[1]);
 
-    //remove null/undefined/empty
     tracks = tracks?.filter((item) => item);
     if (chosenPlaylist) {
-      const res = await sendRequest<IBackendRes<any>>({
-        url: `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/playlists`,
-        method: "PATCH",
-        body: {
-          id: chosenPlaylist._id,
-          title: chosenPlaylist.title,
-          isPublic: chosenPlaylist.isPublic,
-          tracks: tracks,
-        },
-        headers: {
-          Authorization: `Bearer ${session?.access_token}`,
-        },
-      });
-
+      const res = await handleAddPlaylistAction(chosenPlaylist, tracks);
       if (res.data) {
-        toast.success("Thêm track vào playlist thành công!");
-        await refreshCache();
+        toast.success("Added track to playlist successfully!");
         handleClose("", "");
         router.refresh();
       } else {
@@ -110,14 +93,14 @@ const AddPlaylistTrack = (props: IProps) => {
       </Button>
 
       <Dialog open={open} onClose={handleClose} maxWidth={"sm"} fullWidth>
-        <DialogTitle>Thêm track to playlist:</DialogTitle>
+        <DialogTitle>Add track to playlist:</DialogTitle>
         <DialogContent>
           <Box
             width={"100%"}
             sx={{ display: "flex", gap: "30px", flexDirection: "column" }}
           >
             <FormControl fullWidth variant="standard" sx={{ mt: 1 }}>
-              <InputLabel>Chọn playlist</InputLabel>
+              <InputLabel>Choose playlist</InputLabel>
               <Select
                 value={playlistId}
                 label="Playlist"
@@ -140,7 +123,7 @@ const AddPlaylistTrack = (props: IProps) => {
                 multiple
                 value={tracksId}
                 onChange={(e) => {
-                  setTracksId(e.target.value as any);
+                  setTracksId(e.target.value as string[]);
                 }}
                 input={<OutlinedInput id="select-multiple-chip" label="Chip" />}
                 renderValue={(selected) => (

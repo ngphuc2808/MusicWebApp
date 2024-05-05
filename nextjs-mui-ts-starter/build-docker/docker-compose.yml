@@ -19,4 +19,4 @@ services:
       context: ..
       dockerfile: Dockerfile
     restart: unless-stopped
-#docker compose -p hoidanit-soundcloud up -d
+#docker compose -p ptmusic-soundcloud up -d

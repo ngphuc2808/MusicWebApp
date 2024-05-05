@@ -1,17 +1,16 @@
 "use client";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
-import Slider from "react-slick";
-import { Settings } from "react-slick";
-import { Box } from "@mui/material";
+import Image from "next/image";
+import Link from "next/link";
+import Slider, { CustomArrowProps, Settings } from "react-slick";
+import Box from "@mui/material/Box";
 import Button from "@mui/material/Button/Button";
 import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
 import ChevronRightIcon from "@mui/icons-material/ChevronRight";
 import Divider from "@mui/material/Divider";
-import Link from "next/link";
+
 import { convertStrToSlugify } from "@/utils/api";
-import Image from "next/image";
-import { useHasMounted } from "@/utils/customHook";
 
 interface IProps {
   data: ITrackTop[];
@@ -22,7 +21,7 @@ interface IProps {
 const MainSlider = (props: IProps) => {
   const { data, title, custom } = props;
 
-  const NextArrow = (props: any) => {
+  const NextArrow = (props: CustomArrowProps) => {
     return (
       <Button
         color="inherit"
@@ -43,7 +42,7 @@ const MainSlider = (props: IProps) => {
     );
   };
 
-  const PrevArrow = (props: any) => {
+  const PrevArrow = (props: CustomArrowProps) => {
     return (
       <Button
         color="inherit"
@@ -119,7 +118,7 @@ const MainSlider = (props: IProps) => {
       }}
     >
       <h2>{title}</h2>
-      <Slider {...(settings as any)}>
+      <Slider {...settings}>
         {data.map((it) => (
           <div className="track" key={it._id}>
             <div

@@ -12,9 +12,8 @@ export const sendRequest = async <T>(props: IRequest) => {
     nextOption = {},
   } = props;
 
-  const options: any = {
+  const options = {
     method: method,
-    // by default setting the content-type to be json type
     headers: new Headers({ "content-type": "application/json", ...headers }),
     body: body ? JSON.stringify(body) : null,
     ...nextOption,
@@ -29,8 +28,7 @@ export const sendRequest = async <T>(props: IRequest) => {
     if (res.ok) {
       return res.json() as T;
     } else {
-      return res.json().then(function (json) {
-        // to be able to access error status when you catch the error
+      return res.json().then((json) => {
         return {
           statusCode: res.status,
           message: json?.message ?? "",

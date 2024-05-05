@@ -1,43 +1,31 @@
 import { MetadataRoute } from "next";
 
-export default function manifest(): MetadataRoute.Manifest {
+const manifest = (): MetadataRoute.Manifest => {
   return {
-    name: "SoundClound_Clone",
-    short_name: "SoundClound_Clone",
+    name: "PTMusic",
+    short_name: "PTMusic",
     description: "Ứng dụng nghe nhạc",
     icons: [
       {
-        src: "https://salt.tikicdn.com/ts/upload/2f/51/80/5643672027a54bfa593300f53c91c12a.png",
+        src: "https://downloadr2.apkmirror.com/wp-content/uploads/2018/09/ic_music_round.png",
         sizes: "192x192",
         type: "image/png",
       },
       {
-        src: "https://salt.tikicdn.com/ts/upload/2f/51/80/5643672027a54bfa593300f53c91c12a.png",
+        src: "https://cdn-icons-png.flaticon.com/512/9280/9280598.png",
         sizes: "512x512",
         type: "image/png",
       },
     ],
-    theme_color: "#1A94FF",
-    background_color: "#1A94FF",
+    theme_color: "#FF7F50",
+    background_color: "#FF7F50",
     start_url: "/",
     display: "standalone",
     orientation: "portrait",
-    related_applications: [
-      {
-        platform: "play",
-        url: "https://play.google.com/store/apps/details?id=vn.tiki.app.tikiandroid",
-        id: "vn.tiki.app.tikiandroid",
-      },
-      {
-        platform: "itunes",
-        url: "https://apps.apple.com/vn/app/tiki-shopping-fast-shipping/id958100553",
-      },
-      {
-        platform: "webapp",
-        url: "https://tiki.vn/manifest.json",
-      },
-    ],
+    related_applications: [],
     scope: "/",
   };
   1;
-}
+};
+
+export default manifest;

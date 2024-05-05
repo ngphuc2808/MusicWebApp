@@ -2,6 +2,29 @@ export {};
 // https://bobbyhadz.com/blog/typescript-make-types-global#declare-global-types-in-typescript
 
 declare global {
+  interface IGlobalContext {
+    currentTrack: IShareTrack;
+    setCurrentTrack: (v: IShareTrack) => void;
+  }
+
+  interface INewTrack {
+    title: string;
+    description: string;
+    trackUrl: string;
+    imgUrl: string;
+    category: string;
+  }
+
+  interface IFile {
+    info: INewTrack;
+    setInfo: (v: INewTrack) => void;
+    trackUpload?: {
+      fileName: string;
+      percent: number;
+      uploadedTrackName: string;
+    };
+  }
+
   interface IPlayList {
     _id: string;
     title: string;
@@ -18,6 +41,7 @@ declare global {
     createdAt: string;
     updatedAt: string;
   }
+
   interface ITrackTop {
     _id: string;
     title: string;
@@ -37,6 +61,18 @@ declare global {
     isDeleted: boolean;
     createdAt: string;
     updatedAt: string;
+  }
+
+  interface ITabPanelProps {
+    children?: ReactNode;
+    index: number;
+    value: number;
+  }
+
+  interface ITrackUploadProps {
+    fileName: string;
+    percent: number;
+    uploadedTrackName: string;
   }
 
   interface IRequest {
@@ -68,11 +104,6 @@ declare global {
 
   interface IShareTrack extends ITrackTop {
     isPlaying: boolean;
-  }
-
-  interface ITrackContext {
-    currentTrack: IShareTrack;
-    setCurrentTrack: (v: IShareTrack) => void;
   }
 
   interface ITrackComment {

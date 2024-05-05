@@ -1,14 +1,9 @@
 "use client";
-
 import { createContext, useContext, useState } from "react";
 
-export const TrackContext = createContext<ITrackContext | null>(null);
+export const GlobalContext = createContext<IGlobalContext | null>(null);
 
-export const TrackContextProvider = ({
-  children,
-}: {
-  children: React.ReactNode;
-}) => {
+const GlobalContextProvider = ({ children }: { children: React.ReactNode }) => {
   const initValue = {
     _id: "",
     title: "",
@@ -33,10 +28,12 @@ export const TrackContextProvider = ({
   const [currentTrack, setCurrentTrack] = useState<IShareTrack>(initValue);
 
   return (
-    <TrackContext.Provider value={{ currentTrack, setCurrentTrack }}>
+    <GlobalContext.Provider value={{ currentTrack, setCurrentTrack }}>
       {children}
-    </TrackContext.Provider>
+    </GlobalContext.Provider>
   );
 };
 
-export const useTrackContext = () => useContext(TrackContext);
+export const useGlobalContext = () => useContext(GlobalContext);
+
+export default GlobalContextProvider;

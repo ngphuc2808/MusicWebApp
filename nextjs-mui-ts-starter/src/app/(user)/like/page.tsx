@@ -1,17 +1,17 @@
-import type { Metadata } from "next";
+import type { Metadata } from "next/types";
+import { getServerSession } from "next-auth";
+import Image from "next/image";
+import Link from "next/link";
 import Container from "@mui/material/Container";
 import Divider from "@mui/material/Divider";
 import Box from "@mui/material/Box";
 
+import { authOptions } from "@/app/api/auth/auth.options";
 import { convertStrToSlugify, sendRequest } from "@/utils/api";
-import { getServerSession } from "next-auth";
-import Image from "next/image";
-import Link from "next/link";
-import { authOptions } from "@/auth";
 
 export const metadata: Metadata = {
-  title: "Tracks bạn đã liked",
-  description: "miêu tả thôi mà",
+  title: "Like page",
+  description: "Like page",
 };
 
 const LikePage = async () => {

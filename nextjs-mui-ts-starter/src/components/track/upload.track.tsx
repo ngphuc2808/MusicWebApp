@@ -1,23 +1,13 @@
 "use client";
+import { ReactNode, SyntheticEvent, useState } from "react";
 import Tabs from "@mui/material/Tabs";
 import Tab from "@mui/material/Tab";
-import Typography from "@mui/material/Typography";
 import Box from "@mui/material/Box";
-import * as React from "react";
+
 import Step1 from "./steps/step1";
 import Step2 from "./steps/step2";
 
-interface TabPanelProps {
-  children?: React.ReactNode;
-  index: number;
-  value: number;
-}
-
-interface IProps {
-  refreshCache: () => void;
-}
-
-function CustomTabPanel(props: TabPanelProps) {
+const CustomTabPanel = (props: ITabPanelProps) => {
   const { children, value, index, ...other } = props;
 
   return (
@@ -31,18 +21,17 @@ function CustomTabPanel(props: TabPanelProps) {
       {value === index && <Box sx={{ p: 3 }}>{children}</Box>}
     </div>
   );
-}
+};
 
-const UploadTabs = (props: IProps) => {
-  const { refreshCache } = props;
-  const [value, setValue] = React.useState(0);
-  const [trackUpload, setTrackUpload] = React.useState({
+const UploadTabs = () => {
+  const [value, setValue] = useState(0);
+  const [trackUpload, setTrackUpload] = useState<ITrackUploadProps>({
     fileName: "",
     percent: 0,
     uploadedTrackName: "",
   });
 
-  const handleChange = (event: React.SyntheticEvent, newValue: number) => {
+  const handleChange = (event: SyntheticEvent, newValue: number) => {
     setValue(newValue);
   };
 
@@ -66,11 +55,7 @@ const UploadTabs = (props: IProps) => {
         />
       </CustomTabPanel>
       <CustomTabPanel value={value} index={1}>
-        <Step2
-          refreshCache={refreshCache}
-          trackUpload={trackUpload}
-          setValue={setValue}
-        />
+        <Step2 trackUpload={trackUpload} setValue={setValue} />
       </CustomTabPanel>
     </Box>
   );

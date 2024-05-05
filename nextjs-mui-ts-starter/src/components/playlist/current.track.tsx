@@ -1,20 +1,21 @@
 "use client";
-
-import { convertStrToSlugify } from "@/utils/api";
-import { Box, Typography } from "@mui/material";
 import Link from "next/link";
+import Box from "@mui/material/Box";
+import Typography from "@mui/material/Typography";
 import PlayArrowIcon from "@mui/icons-material/PlayArrow";
 import PauseIcon from "@mui/icons-material/Pause";
 import IconButton from "@mui/material/IconButton";
-import { useTrackContext } from "@/app/lib/track.wrapper";
 
+import { useGlobalContext } from "@/app/lib/context.wrapper";
+import { convertStrToSlugify } from "@/utils/api";
 interface IProps {
   track: IShareTrack;
 }
 const CurrentTrack = (props: IProps) => {
   const { track } = props;
 
-  const { currentTrack, setCurrentTrack } = useTrackContext() as ITrackContext;
+  const { currentTrack, setCurrentTrack } =
+    useGlobalContext() as IGlobalContext;
 
   return (
     <Box

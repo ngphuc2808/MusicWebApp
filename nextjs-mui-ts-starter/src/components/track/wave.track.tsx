@@ -1,37 +1,38 @@
 "use client";
-
+import "./style.scss";
 import { useEffect, useRef, useState, useMemo, useCallback } from "react";
 import { useSearchParams } from "next/navigation";
-import { useWavesurfer } from "@/utils/customHook";
+import { useRouter } from "next/navigation";
 import { WaveSurferOptions } from "wavesurfer.js";
 import PlayArrowIcon from "@mui/icons-material/PlayArrow";
 import PauseIcon from "@mui/icons-material/Pause";
-import "./style.scss";
-import { Tooltip } from "@mui/material";
-import { useTrackContext } from "@/app/lib/track.wrapper";
-import { fetchDefaultImages, sendRequest } from "@/utils/api";
-import CommentTrack from "./comment.track";
-import LikeTrack from "./like.track";
-import { useRouter } from "next/navigation";
+import Tooltip from "@mui/material/Tooltip";
 import Image from "next/image";
+
+import { useGlobalContext } from "@/app/lib/context.wrapper";
+import { fetchDefaultImages, sendRequest } from "@/utils/api";
+import { useWavesurfer } from "@/utils/hooks/custom.hooks";
+import LikeTrack from "./like.track";
+import CommentTrack from "./comment.track";
+import { handleIncreaseViewAction } from "@/utils/actions/actions";
 
 interface IProps {
   track: ITrackTop | null;
   comments: ITrackComment[] | [];
-  refreshCache: () => void;
 }
 
 const WaveTrack = (props: IProps) => {
   const firstViewRef = useRef(true);
   const router = useRouter();
-  const { track, comments, refreshCache } = props;
+  const { track, comments } = props;
   const searchParams = useSearchParams();
   const fileName = searchParams.get("audio");
   const containerRef = useRef<HTMLDivElement>(null);
   const hoverRef = useRef<HTMLDivElement>(null);
   const [time, setTime] = useState<string>("0:00");
   const [duration, setDuration] = useState<string>("0:00");
-  const { currentTrack, setCurrentTrack } = useTrackContext() as ITrackContext;
+  const { currentTrack, setCurrentTrack } =
+    useGlobalContext() as IGlobalContext;
 
   const optionsMemo = useMemo((): Omit<WaveSurferOptions, "container"> => {
     let gradient, progressGradient;
@@ -94,8 +95,7 @@ const WaveTrack = (props: IProps) => {
 
   const wavesurfer = useWavesurfer(containerRef, optionsMemo);
   const [isPlaying, setIsPlaying] = useState<boolean>(false);
-  // Initialize wavesurfer when the container mounts
-  // or any of the props change
+
   useEffect(() => {
     if (!wavesurfer) return;
     setIsPlaying(false);
@@ -135,16 +135,7 @@ const WaveTrack = (props: IProps) => {
 
   const handleIncreaseView = async () => {
     if (firstViewRef.current) {
-      await sendRequest<IBackendRes<IModelPaginate<ITrackTop>>>({
-        url: `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/tracks/increase-view`,
-        method: "POST",
-        body: {
-          trackId: track?._id,
-        },
-      });
-
-      await refreshCache();
-
+      await handleIncreaseViewAction(track?._id);
       router.refresh();
       firstViewRef.current = false;
     }
@@ -320,7 +311,7 @@ const WaveTrack = (props: IProps) => {
         </div>
       </div>
       <div>
-        <LikeTrack refreshCache={refreshCache} track={track} />
+        <LikeTrack track={track} />
       </div>
       <div>
         <CommentTrack

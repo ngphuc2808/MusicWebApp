@@ -1,7 +1,8 @@
 "use client";
-import Button from "@mui/material/Button";
+import { SyntheticEvent, useState } from "react";
+import { useRouter } from "next/navigation";
+import Button from "@mui/material/Button/Button";
 import AddIcon from "@mui/icons-material/Add";
-import { useState } from "react";
 import TextField from "@mui/material/TextField";
 import Dialog from "@mui/material/Dialog";
 import DialogActions from "@mui/material/DialogActions";
@@ -14,20 +15,17 @@ import Box from "@mui/material/Box";
 
 import { useToast } from "@/utils/toast";
 import { sendRequest } from "@/utils/api";
-import { useRouter } from "next/navigation";
-import { useSession } from "next-auth/react";
+import { handleNewPlaylistAction } from "@/utils/actions/actions";
 
-const NewPlaylist = (props: any) => {
-  const { refreshCache } = props;
+const NewPlaylist = () => {
   const [open, setOpen] = useState(false);
 
   const [isPublic, setIsPublic] = useState<boolean>(true);
   const [title, setTitle] = useState<string>("");
   const toast = useToast();
   const router = useRouter();
-  const { data: session } = useSession();
 
-  const handleClose = (event: any, reason: any) => {
+  const handleClose = (event: SyntheticEvent | string, reason: string) => {
     if (reason && reason == "backdropClick") return;
     setOpen(false);
   };
@@ -37,22 +35,12 @@ const NewPlaylist = (props: any) => {
       toast.error("Tiêu đề không được để trống!");
       return;
     }
-    const res = await sendRequest<IBackendRes<any>>({
-      url: `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/playlists/empty`,
-      method: "POST",
-      body: { title, isPublic },
-      headers: {
-        Authorization: `Bearer ${session?.access_token}`,
-      },
-    });
+    const res = await handleNewPlaylistAction(title, isPublic);
     if (res.data) {
       toast.success("Tạo mới playlist thành công!");
       setIsPublic(true);
       setTitle("");
-
       setOpen(false);
-
-      await refreshCache();
       router.refresh();
     } else {
       toast.error(res.message);

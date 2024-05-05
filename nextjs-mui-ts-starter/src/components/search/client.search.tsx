@@ -1,12 +1,13 @@
 "use client";
-import { useSearchParams } from "next/navigation";
-import { convertStrToSlugify, sendRequest } from "@/utils/api";
 import { useState, useEffect } from "react";
+import { useSearchParams } from "next/navigation";
+import Link from "next/link";
+import Image from "next/image";
 import Box from "@mui/material/Box";
 import Divider from "@mui/material/Divider";
-import Link from "next/link";
-import { Typography } from "@mui/material";
-import Image from "next/image";
+import Typography from "@mui/material/Typography";
+
+import { convertStrToSlugify, sendRequest } from "@/utils/api";
 
 const ClientSearch = () => {
   const searchParams = useSearchParams();
@@ -28,21 +29,19 @@ const ClientSearch = () => {
     }
   };
   useEffect(() => {
-    //update document title by query
-    document.title = `"${query}" SoundClound`;
+    document.title = `"${query}" PTMusic`;
 
-    //fetch data
     if (query) fetchData(query);
   }, [query]);
 
   return (
     <div>
       {!query || !tracks.length ? (
-        <div>Không tồn tại kết quả tìm kiếm</div>
+        <div>No search results exist!</div>
       ) : (
         <Box>
           <div>
-            Kết quả tìm kiếm cho từ khóa: <b>{query}</b>
+            Search results for keywords: <b>{query}</b>
           </div>
           <Divider sx={{ my: 2 }} />
           <Box sx={{ display: "flex", flexDirection: "column", gap: "20px" }}>

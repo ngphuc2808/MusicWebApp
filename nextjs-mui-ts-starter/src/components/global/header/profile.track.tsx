@@ -1,6 +1,5 @@
 "use client";
-
-import { useTheme } from "@mui/material/styles";
+import useTheme from "@mui/material/styles/useTheme";
 import Box from "@mui/material/Box";
 import Card from "@mui/material/Card";
 import CardContent from "@mui/material/CardContent";
@@ -10,9 +9,10 @@ import Typography from "@mui/material/Typography";
 import SkipPreviousIcon from "@mui/icons-material/SkipPrevious";
 import PlayArrowIcon from "@mui/icons-material/PlayArrow";
 import SkipNextIcon from "@mui/icons-material/SkipNext";
-import { useTrackContext } from "@/app/lib/track.wrapper";
-import { PauseCircleOutline } from "@mui/icons-material";
+import PauseCircleOutline from "@mui/icons-material/PauseCircleOutline";
 import Link from "next/link";
+
+import { useGlobalContext } from "@/app/lib/context.wrapper";
 import { convertStrToSlugify } from "@/utils/api";
 
 interface IProps {
@@ -21,7 +21,8 @@ interface IProps {
 const ProfileTracks = (props: IProps) => {
   const { data } = props;
   const theme = useTheme();
-  const { currentTrack, setCurrentTrack } = useTrackContext() as ITrackContext;
+  const { currentTrack, setCurrentTrack } =
+    useGlobalContext() as IGlobalContext;
 
   return (
     <Card sx={{ display: "flex", justifyContent: "space-between" }}>

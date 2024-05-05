@@ -2,7 +2,7 @@ import Container from "@mui/material/Container";
 import Skeleton from "@mui/material/Skeleton";
 import Box from "@mui/material/Box";
 
-export default function Loading() {
+const Loading = () => {
   return (
     <Container sx={{ mt: 3 }}>
       <Box
@@ -131,4 +131,6 @@ export default function Loading() {
       </Box>
     </Container>
   );
-}
+};
+
+export default Loading;

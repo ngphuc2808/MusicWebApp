@@ -1,8 +1,7 @@
 "use client";
-
 import { AppProgressBar as ProgressBar } from "next-nprogress-bar";
 
-const NProgessWrapper = ({ children }: { children: React.ReactNode }) => {
+const ProgessWrapper = ({ children }: { children: React.ReactNode }) => {
   return (
     <>
       {children}
@@ -16,4 +15,4 @@ const NProgessWrapper = ({ children }: { children: React.ReactNode }) => {
   );
 };
 
-export default NProgessWrapper;
+export default ProgessWrapper;

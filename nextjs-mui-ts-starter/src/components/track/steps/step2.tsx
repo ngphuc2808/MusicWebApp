@@ -1,27 +1,37 @@
 "use client";
-
+import { useEffect, useState } from "react";
+import { useSession } from "next-auth/react";
+import { useRouter } from "next/navigation";
+import Image from "next/image";
 import Typography from "@mui/material/Typography";
 import Box from "@mui/material/Box";
-import * as React from "react";
-import { styled } from "@mui/material/styles";
-import Button from "@mui/material/Button";
+import Button from "@mui/material/Button/Button";
 import CloudUploadIcon from "@mui/icons-material/CloudUpload";
 import LinearProgress, {
   LinearProgressProps,
 } from "@mui/material/LinearProgress";
+import CircularProgress from "@mui/material/CircularProgress";
 import Grid from "@mui/material/Grid";
 import TextField from "@mui/material/TextField";
 import MenuItem from "@mui/material/MenuItem";
 import axios from "axios";
-import { useSession } from "next-auth/react";
-import { sendRequest } from "@/utils/api";
-import { useToast } from "@/utils/toast";
-import { useRouter } from "next/navigation";
-import Image from "next/image";
 
-function LinearProgressWithLabel(
+import { useToast } from "@/utils/toast";
+import { VisuallyHiddenInput } from "./styled.module";
+import { handleUploadTrackAction } from "@/utils/actions/actions";
+
+interface IProps {
+  trackUpload: {
+    fileName: string;
+    percent: number;
+    uploadedTrackName: string;
+  };
+  setValue: (v: number) => void;
+}
+
+const LinearProgressWithLabel = (
   props: LinearProgressProps & { value: number }
-) {
+) => {
   return (
     <Box sx={{ display: "flex", alignItems: "center" }}>
       <Box sx={{ width: "100%", mr: 1 }}>
@@ -34,34 +44,22 @@ function LinearProgressWithLabel(
       </Box>
     </Box>
   );
-}
+};
 
-function LinearWithValueLabel(props: IProps) {
+const LinearWithValueLabel = (props: IProps) => {
   return (
     <Box sx={{ width: "100%" }}>
       <LinearProgressWithLabel value={props.trackUpload.percent} />
     </Box>
   );
-}
+};
 
-const VisuallyHiddenInput = styled("input")({
-  clip: "rect(0 0 0 0)",
-  clipPath: "inset(50%)",
-  height: 1,
-  overflow: "hidden",
-  position: "absolute",
-  bottom: 0,
-  left: 0,
-  whiteSpace: "nowrap",
-  width: 1,
-});
-
-function InputFileUpload(props: any) {
-  const { setInfo, info } = props;
+const InputFileUpload = (props: IFile) => {
+  const { setInfo, info, trackUpload } = props;
   const { data: session } = useSession();
   const toast = useToast();
 
-  const handleUpload = async (image: any) => {
+  const handleUpload = async (image: File) => {
     const formData = new FormData();
     formData.append("fileUpload", image);
     try {
@@ -95,39 +93,27 @@ function InputFileUpload(props: any) {
       }}
       component="label"
       variant="contained"
-      startIcon={<CloudUploadIcon />}
+      startIcon={
+        trackUpload?.percent! < 100 ? (
+          <CircularProgress size="1rem" color="inherit" />
+        ) : (
+          <CloudUploadIcon />
+        )
+      }
+      disabled={trackUpload?.percent! < 100}
     >
       Upload file
       <VisuallyHiddenInput type="file" />
     </Button>
   );
-}
-
-interface IProps {
-  trackUpload: {
-    fileName: string;
-    percent: number;
-    uploadedTrackName: string;
-  };
-  setValue: (v: number) => void;
-  refreshCache?: () => void;
-}
-
-interface INewTrack {
-  title: string;
-  description: string;
-  trackUrl: string;
-  imgUrl: string;
-  category: string;
-}
+};
 
 const Step2 = (props: IProps) => {
-  const { data: session } = useSession();
   const toast = useToast();
   const router = useRouter();
 
-  const { trackUpload, setValue, refreshCache } = props;
-  const [info, setInfo] = React.useState<INewTrack>({
+  const { trackUpload, setValue } = props;
+  const [info, setInfo] = useState<INewTrack>({
     title: "",
     description: "",
     trackUrl: "",
@@ -135,7 +121,7 @@ const Step2 = (props: IProps) => {
     category: "",
   });
 
-  React.useEffect(() => {
+  useEffect(() => {
     if (trackUpload && trackUpload.uploadedTrackName) {
       setInfo({
         ...info,
@@ -143,6 +129,17 @@ const Step2 = (props: IProps) => {
       });
     }
   }, [trackUpload]);
+
+  const handleSubmitForm = async () => {
+    const res = await handleUploadTrackAction(info);
+    if (res.data) {
+      setValue(0);
+      toast.success("create success");
+      router.refresh();
+    } else {
+      toast.error(res.message);
+    }
+  };
 
   const category = [
     {
@@ -158,33 +155,6 @@ const Step2 = (props: IProps) => {
       label: "PARTY",
     },
   ];
-
-  const handleSubmitForm = async () => {
-    const res = await sendRequest<IBackendRes<ITrackTop[]>>({
-      url: `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/tracks`,
-      method: "POST",
-      body: {
-        title: info.title,
-        description: info.description,
-        trackUrl: info.trackUrl,
-        imgUrl: info.imgUrl,
-        category: info.category,
-      },
-      headers: {
-        Authorization: `Bearer ${session?.access_token}`,
-      },
-    });
-    if (res.data) {
-      setValue(0);
-      toast.success("create success");
-
-      if (refreshCache) await refreshCache();
-
-      router.refresh();
-    } else {
-      toast.error(res.message);
-    }
-  };
 
   return (
     <div>
@@ -219,7 +189,11 @@ const Step2 = (props: IProps) => {
             </div>
           </div>
           <div>
-            <InputFileUpload setInfo={setInfo} info={info} />
+            <InputFileUpload
+              setInfo={setInfo}
+              info={info}
+              trackUpload={trackUpload}
+            />
           </div>
         </Grid>
         <Grid item xs={6} md={8}>

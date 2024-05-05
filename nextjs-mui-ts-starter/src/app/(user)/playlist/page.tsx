@@ -1,3 +1,6 @@
+import { Fragment } from "react";
+import type { Metadata } from "next/types";
+import { getServerSession } from "next-auth";
 import Container from "@mui/material/Container";
 import Box from "@mui/material/Container";
 import Divider from "@mui/material/Divider";
@@ -6,18 +9,16 @@ import AccordionSummary from "@mui/material/AccordionSummary";
 import AccordionDetails from "@mui/material/AccordionDetails";
 import Typography from "@mui/material/Typography";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
+
 import { sendRequest } from "@/utils/api";
-import { getServerSession } from "next-auth";
-import { Fragment } from "react";
-import type { Metadata } from "next";
 import NewPlaylist from "@/components/playlist/new.playlist";
 import AddPlaylistTrack from "@/components/playlist/add.playlist.track";
 import CurrentTrack from "@/components/playlist/current.track";
-import { authOptions } from "@/auth";
+import { authOptions } from "@/app/api/auth/auth.options";
 
 export const metadata: Metadata = {
-  title: "Playlist bạn đã tạo",
-  description: "miêu tả thôi mà",
+  title: "Playlist page",
+  description: "Playlist page",
 };
 
 const PlaylistPage = async () => {
@@ -44,18 +45,6 @@ const PlaylistPage = async () => {
     },
   });
 
-  const refreshCache = async () => {
-    "use server";
-    await sendRequest<IBackendRes<any>>({
-      url: `${process.env.NEXT_PUBLIC_FRONTEND_URL}/api/revalidate`,
-      method: "POST",
-      queryParams: {
-        tag: "playlist-by-user",
-        secret: process.env.MY_SECRET_TOKEN,
-      },
-    });
-  };
-
   const playlists = res?.data?.result ?? [];
   const tracks = res1?.data?.result ?? [];
 
@@ -70,12 +59,8 @@ const PlaylistPage = async () => {
       >
         <h3>Danh sách phát</h3>
         <div style={{ display: "flex", gap: "20px" }}>
-          <NewPlaylist refreshCache={refreshCache} />
-          <AddPlaylistTrack
-            refreshCache={refreshCache}
-            playlists={playlists}
-            tracks={tracks}
-          />
+          <NewPlaylist />
+          <AddPlaylistTrack playlists={playlists} tracks={tracks} />
         </div>
       </Box>
       <Divider variant="middle" />

@@ -1,19 +1,18 @@
-import WaveTrack from "@/components/track/wave.track";
-import { notFound, useSearchParams } from "next/navigation";
+import { notFound } from "next/navigation";
+import type { Metadata, ResolvingMetadata } from "next/types";
 import Container from "@mui/material/Container";
+
 import { sendRequest } from "@/utils/api";
-import type { Metadata, ResolvingMetadata } from "next";
+import WaveTrack from "@/components/track/wave.track";
 
-type Props = {
+interface IProps {
   params: { slug: string };
-};
+}
 
-export async function generateMetadata(
-  { params }: Props,
+export const generateMetadata = async (
+  { params }: IProps,
   parent: ResolvingMetadata
-): Promise<Metadata> {
-  // read route params
-
+): Promise<Metadata> => {
   const temp = params?.slug?.split(".html") ?? [];
   const temp1 = temp[0].split("-") ?? [];
   const id = temp1[temp1.length - 1];
@@ -23,34 +22,25 @@ export async function generateMetadata(
     method: "GET",
   });
 
-  // optionally access and extend (rather than replace) parent metadata
-
   return {
     title: res.data?.title,
     description: res.data?.description,
     openGraph: {
-      title: "SoundClound Clone",
-      description: "Clone soundclound application with NextJs",
+      title: "PTMusic",
+      description: "PTMusic application with NextJs",
       type: "website",
-      images: [``],
+      images: [
+        `https://www.creatopy.com/blog/wp-content/uploads/2018/05/SoundCloud-Header.png`,
+      ],
     },
   };
-}
+};
 
-export async function generateStaticParams() {
-  return [
-    {
-      slug: "nu-hon-bisou-662c0ec506f1691c6b0ebc9b.html",
-    },
-    {
-      slug: "tinh-co-yeu-em-662c0ec506f1691c6b0ebca1.html",
-    },
-  ];
-}
+export const generateStaticParams = async () => {
+  return [];
+};
 
-const DetailTrackPage = async (props: any) => {
-  const { params } = props;
-
+const DetailTrackPage = async ({ params }: { params: { slug: string } }) => {
   const temp = params?.slug?.split(".html") ?? [];
   const temp1 = temp[0].split("-") ?? [];
   const id = temp1[temp1.length - 1];
@@ -80,18 +70,6 @@ const DetailTrackPage = async (props: any) => {
     },
   });
 
-  const refreshCache = async () => {
-    "use server";
-    await sendRequest<IBackendRes<any>>({
-      url: `${process.env.NEXT_PUBLIC_FRONTEND_URL}/api/revalidate`,
-      method: "POST",
-      queryParams: {
-        tag: "track-by-id",
-        secret: process.env.MY_SECRET_TOKEN,
-      },
-    });
-  };
-
   await new Promise((resolve) => setTimeout(resolve, 500));
 
   return (
@@ -100,7 +78,6 @@ const DetailTrackPage = async (props: any) => {
         <WaveTrack
           track={res?.data ?? null}
           comments={res1.data?.result ?? []}
-          refreshCache={refreshCache}
         />
       </div>
     </Container>

@@ -1,31 +1,27 @@
 "use client";
-import {
-  Alert,
-  Avatar,
-  Box,
-  Button,
-  Divider,
-  Grid,
-  Snackbar,
-  TextField,
-  Typography,
-} from "@mui/material";
+import { useState } from "react";
+import { signIn } from "next-auth/react";
+import { useRouter } from "next/navigation";
+import Link from "next/link";
+import Alert from "@mui/material/Alert";
+import Avatar from "@mui/material/Avatar";
+import Box from "@mui/material/Box";
+import Button from "@mui/material/Button/Button";
+import Divider from "@mui/material/Divider";
+import Grid from "@mui/material/Grid";
+import Snackbar from "@mui/material/Snackbar";
+import TextField from "@mui/material/TextField";
+import Typography from "@mui/material/Typography";
 import LockIcon from "@mui/icons-material/Lock";
 import GitHubIcon from "@mui/icons-material/GitHub";
 import GoogleIcon from "@mui/icons-material/Google";
 import Visibility from "@mui/icons-material/Visibility";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
-
 import VisibilityOff from "@mui/icons-material/VisibilityOff";
 import InputAdornment from "@mui/material/InputAdornment";
 import IconButton from "@mui/material/IconButton";
 
-import { useState } from "react";
-import { signIn } from "next-auth/react";
-import Link from "next/link";
-import { useRouter } from "next/navigation";
-
-const AuthSignIn = (props: any) => {
+const AuthSignIn = () => {
   const router = useRouter();
   const [showPassword, setShowPassword] = useState<boolean>(false);
   const [username, setUsername] = useState<string>("");
@@ -70,15 +66,7 @@ const AuthSignIn = (props: any) => {
   };
 
   return (
-    <Box
-      sx={
-        {
-          // backgroundImage: "linear-gradient(to bottom, #ff9aef, #fedac1, #d5e1cf, #b7e6d9)",
-          // backgroundColor: "#b7e6d9",
-          // backgroundRepeat: "no-repeat"
-        }
-      }
-    >
+    <Box>
       <Grid
         container
         sx={{

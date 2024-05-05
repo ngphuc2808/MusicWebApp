@@ -1,17 +1,17 @@
 "use client";
-import { fetchDefaultImages, sendRequest } from "@/utils/api";
-import { Box, TextField } from "@mui/material";
-import Avatar from "@mui/material/Avatar";
 import { useState } from "react";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
-import dayjs from "dayjs";
-import WaveSurfer from "wavesurfer.js";
-
-import relativeTime from "dayjs/plugin/relativeTime";
-import { useHasMounted } from "@/utils/customHook";
 import Image from "next/image";
+import Box from "@mui/material/Box";
+import TextField from "@mui/material/TextField";
+import WaveSurfer from "wavesurfer.js";
+import dayjs from "dayjs";
+import relativeTime from "dayjs/plugin/relativeTime";
 dayjs.extend(relativeTime);
+
+import { fetchDefaultImages, sendRequest } from "@/utils/api";
+import { useHasMounted } from "@/utils/hooks/custom.hooks";
 
 interface IProps {
   comments: ITrackComment[];

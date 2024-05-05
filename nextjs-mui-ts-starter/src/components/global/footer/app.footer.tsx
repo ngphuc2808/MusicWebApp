@@ -1,16 +1,18 @@
 "use client";
-import { useTrackContext } from "@/app/lib/track.wrapper";
-import { useHasMounted } from "@/utils/customHook";
-import { Container } from "@mui/material";
-import AppBar from "@mui/material/AppBar";
 import { useRef, useEffect } from "react";
+import Container from "@mui/material/Container";
+import AppBar from "@mui/material/AppBar";
 import AudioPlayer from "react-h5-audio-player";
 import "react-h5-audio-player/lib/styles.css";
+
+import { useGlobalContext } from "@/app/lib/context.wrapper";
+import { useHasMounted } from "@/utils/hooks/custom.hooks";
 
 const AppFooter = () => {
   const hasMounted = useHasMounted();
   const playerRef = useRef(null);
-  const { currentTrack, setCurrentTrack } = useTrackContext() as ITrackContext;
+  const { currentTrack, setCurrentTrack } =
+    useGlobalContext() as IGlobalContext;
 
   useEffect(() => {
     if (currentTrack?.isPlaying === false) {
@@ -23,7 +25,7 @@ const AppFooter = () => {
     }
   }, [currentTrack]);
 
-  if (!hasMounted) return <></>; //fragment
+  if (!hasMounted) return <></>;
 
   return (
     <>

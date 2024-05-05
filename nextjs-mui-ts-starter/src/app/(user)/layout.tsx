@@ -1,11 +1,7 @@
-import AppHeader from "@/components/header/app.header";
-import AppFooter from "@/components/footer/app.footer";
+import AppHeader from "@/components/global/header/app.header";
+import AppFooter from "@/components/global/footer/app.footer";
 
-export default function UserLayout({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
+const UserLayout = ({ children }: { children: React.ReactNode }) => {
   return (
     <>
       <AppHeader />
@@ -14,4 +10,6 @@ export default function UserLayout({
       <AppFooter />
     </>
   );
-}
+};
+
+export default UserLayout;
